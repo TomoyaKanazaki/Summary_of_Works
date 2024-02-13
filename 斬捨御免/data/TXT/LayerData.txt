@@ -1,0 +1,328 @@
+//==========================================
+//
+//  階層構造の設定[LayerData.txt]
+//  Author : Tomoya Kanazaki
+//
+//==========================================
+
+NUM_LAYER = 5
+
+//==========================================
+//  階層構造の種類
+//==========================================
+
+LAYER_DATA //プレイヤーの構造
+	
+	NUM_MODEL 15
+	
+	MODELID		0
+	ParentID	-1
+	POS			0.0 28.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		1
+	ParentID	0
+	POS			0.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		2
+	ParentID	1
+	POS			0.0 10.0 1.5
+	ROT			0.0 0.0 0.0
+
+	MODELID		3
+	ParentID	0
+	POS			3.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		4
+	ParentID	1
+	POS			2.5 7.0 2.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		5
+	ParentID	4
+	POS			6.0 1.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		6
+	ParentID	1
+	POS			-2.5 7.0 2.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		7
+	ParentID	6
+	POS			-6.0 1.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		8
+	ParentID	0
+	POS			2.0 -3.8 0.5
+	ROT			0.0 0.0 0.0
+
+	MODELID		9
+	ParentID	8
+	POS			-0.65 -11.5 0.55
+	ROT			0.0 0.0 0.0
+
+	MODELID		10
+	ParentID	9
+	POS			-0.16 -10.0 0.5
+	ROT			0.0 0.0 0.0
+
+	MODELID		11
+	ParentID	0
+	POS			-2.0 -3.8 0.5
+	ROT			0.0 0.0 0.0
+
+	MODELID		12
+	ParentID	11
+	POS			0.65 -11.5 0.55
+	ROT			0.0 0.0 0.0
+
+	MODELID		13
+	ParentID	12
+	POS			0.155 -10.0 0.5
+	ROT			0.0 0.0 0.0
+
+	MODELID		28
+	ParentID	7
+	POS			-10.0 0.0 0.0
+	ROT			0.0 1.57 -1.57
+
+LAYER_DATA //提灯おばけの構造
+	
+	NUM_MODEL 3
+
+	MODELID		17
+	ParentID	-1
+	POS			0.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		18
+	ParentID	0
+	POS			0.0 0.0 10.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		19
+	ParentID	0
+	POS			0.0 0.0 10.0
+	ROT			0.0 0.0 0.0
+
+LAYER_DATA //唐笠おばけの構造
+	
+	NUM_MODEL 2
+
+	MODELID		20
+	ParentID	-1
+	POS			0.0 40.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		21
+	ParentID	0
+	POS			0.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+LAYER_DATA //ボス
+	
+	NUM_MODEL 6
+
+	MODELID		22
+	ParentID	-1
+	POS			0.0 40.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		23
+	ParentID	0
+	POS			0.0 35.0 0.0
+	ROT			0.0 0.0 0.0
+
+
+	MODELID		24
+	ParentID	0
+	POS			30.0 30.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		26
+	ParentID	0
+	POS			-30.0 30.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		25
+	ParentID	2
+	POS			50.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		27
+	ParentID	3
+	POS			-50.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+LAYER_DATA //建物
+
+	NUM_MODEL 33
+	
+	MODELID		14
+	ParentID	-1
+	POS			0.0 0.0 150.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-200.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			200.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-400.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			400.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-600.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			600.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-800.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			800.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-1000.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			1000.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-1200.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			1200.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-1400.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			1400.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		14
+	ParentID	0
+	POS			-1600.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			1600.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-1800.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			1800.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-2000.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			2000.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-2200.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			2200.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-2400.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			2400.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-2600.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			2600.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			-2800.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			2800.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+
+	MODELID		14
+	ParentID	0
+	POS			-3000.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		14
+	ParentID	0
+	POS			3000.0 0.0 0.0
+	ROT			0.0 0.0 0.0
+	
+	MODELID		16
+	ParentID	0
+	POS			-2300.0 0.0 -150.0
+	ROT			0.0 1.57 0.0
+	
+	MODELID		16
+	ParentID	0
+	POS			2300.0 0.0 -150.0
+	ROT			0.0 1.57 0.0

@@ -1,0 +1,84 @@
+#==============================================================================
+#
+# 『KeyConfigData』スクリプトファイル [KeyConfigData.txt]
+# Author : 小綱啓仁
+#
+#==============================================================================
+
+#------------------------------------------------------------------------------
+# キーコンフィグの情報(4コントローラー分)
+#------------------------------------------------------------------------------
+
+ONE_MINUTES_LOADING
+
+KEY = 0
+KEY = 1
+KEY = 2
+KEY = 3
+KEY = 4
+KEY = 5
+KEY = 6
+KEY = 7
+KEY = 8
+KEY = 9
+KEY = 10
+KEY = 11
+KEY = 12
+
+ONE_MINUTES_LOADING_END
+
+ONE_MINUTES_LOADING
+
+KEY = 0
+KEY = 1
+KEY = 2
+KEY = 3
+KEY = 4
+KEY = 5
+KEY = 6
+KEY = 7
+KEY = 8
+KEY = 9
+KEY = 10
+KEY = 11
+KEY = 12
+
+ONE_MINUTES_LOADING_END
+
+ONE_MINUTES_LOADING
+
+KEY = 0
+KEY = 1
+KEY = 2
+KEY = 3
+KEY = 4
+KEY = 5
+KEY = 6
+KEY = 7
+KEY = 8
+KEY = 9
+KEY = 10
+KEY = 11
+KEY = 12
+
+ONE_MINUTES_LOADING_END
+
+ONE_MINUTES_LOADING
+
+KEY = 0
+KEY = 1
+KEY = 2
+KEY = 3
+KEY = 4
+KEY = 5
+KEY = 6
+KEY = 7
+KEY = 8
+KEY = 9
+KEY = 10
+KEY = 11
+KEY = 12
+
+ONE_MINUTES_LOADING_END
+
+END_SCRIPT		# この行は絶対消さないこと！

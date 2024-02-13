@@ -1,0 +1,29 @@
+//==========================================
+//
+//  使用するテクスチャの設定[TexData.txt]
+//  Author : Tomoya Kanazaki
+//
+//==========================================
+
+NUM_TEXTURE = 17
+
+//==========================================
+//  テクスチャファイル名
+//==========================================
+TEXTURE_FILENAME = number.png				//[0]数字
+TEXTURE_FILENAME = title.png				//[1]タイトル
+TEXTURE_FILENAME = gameclear.png			//[2]ゲームクリア
+TEXTURE_FILENAME = gameover.png				//[3]ゲームオーバー
+TEXTURE_FILENAME = field.png				//[4]床
+TEXTURE_FILENAME = water.png				//[5]水
+TEXTURE_FILENAME = sky.png					//[6]空
+TEXTURE_FILENAME = anim_slash.png			//[7]エフェクト
+TEXTURE_FILENAME = slash.png				//[8]斬撃エフェクト
+TEXTURE_FILENAME = pipo-btleffect081.png	//[9]爆散エフェクト
+TEXTURE_FILENAME = pipo-mapeffect002.png	//[10]ヒットエフェクト
+TEXTURE_FILENAME = pipo-btleffect014.png	//[11]死亡エフェクト
+TEXTURE_FILENAME = pipo-btleffect018.png	//[12]ボス出現エフェクト
+TEXTURE_FILENAME = pipo-btleffect017.png	//[13]ボス出現エフェクト
+TEXTURE_FILENAME = bullet.png				//[14]弾
+TEXTURE_FILENAME = pipo-btleffect102g.png	//[15]爆発
+TEXTURE_FILENAME = Leaf.png					//[16]🍃
