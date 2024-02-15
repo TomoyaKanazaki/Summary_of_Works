@@ -5,7 +5,7 @@
 //
 //==========================================
 
-NUM_MODEL = 29
+NUM_MODEL = 30
 
 //==========================================
 //  xファイル名
@@ -39,3 +39,4 @@ MODEL_FILENAME = ENEMY\\Boss\\left_KATANA.x		//[25]ボスの左の刀
 MODEL_FILENAME = ENEMY\\Boss\\right.x			//[26]ボスの右手
 MODEL_FILENAME = ENEMY\\Boss\\right_KATANA.x	//[27]ボスの右の刀
 MODEL_FILENAME = 168\\14_KATANA.x				//[28]刀
+MODEL_FILENAME = blade.x						//[29]刀弾
