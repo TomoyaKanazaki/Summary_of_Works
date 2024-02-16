@@ -5,7 +5,7 @@
 //
 //==========================================
 
-NUM_TEXTURE = 20
+NUM_TEXTURE = 21
 
 //==========================================
 //  テクスチャファイル名
@@ -30,3 +30,4 @@ TEXTURE_FILENAME = Leaf.png					//[16]🍃
 TEXTURE_FILENAME = frame_00.png				//[17]プレイヤーの枠
 TEXTURE_FILENAME = frame_01.png				//[18]敵の枠
 TEXTURE_FILENAME = flame.jpeg				//[19]敵の体力
+TEXTURE_FILENAME = pipo-btleffect145.png	//[20]連撃エフェクト
