@@ -104,7 +104,112 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 		return false;
 	}
 
+	// IDGISwapChain3を取得
+	hr = pSwapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain));
 
+	// NULLチェック
+	if (FAILED(hr))
+	{
+		Utility::SafeRelease(&pFactory);
+		Utility::SafeRelease(&pSwapChain);
+		return false;
+	}
+
+	// バックバッファ番号を取得
+	m_FrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
+
+	// 不要になったメモリを開放する
+	Utility::SafeRelease(&pFactory);
+	Utility::SafeRelease(&pSwapChain);
+
+	// コマンドアロケータの生成
+	for (auto i = 0u; i < FrameCount; ++i)
+	{
+		hr = m_pDevice->CreateCommandAllocator
+		(
+			D3D12_COMMAND_LIST_TYPE_DIRECT,
+			IID_PPV_ARGS(&m_pCmdAllocator[i])
+		);
+
+		// NULLチェック
+		if (FAILED(hr)) { return false; }
+	}
+
+	// コマンドリストの生成
+	hr = m_pDevice->CreateCommandList
+	(
+		0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		m_pCmdAllocator[m_FrameIndex],
+		nullptr,
+		IID_PPV_ARGS(&m_pCmdList)
+	);
+
+	// NULLチェック
+	if (FAILED(hr)) { return false; }
+
+	// ディスクリプタヒープの設定
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+	heapDesc.NumDescriptors = FrameCount;
+	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	heapDesc.NodeMask = 0;
+
+	// ディスクリプタヒープの生成
+	hr = m_pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&m_pHeapRTV));
+
+	// NULLチェック
+	if (FAILED(hr)) { return false; }
+
+	auto handle = m_pHeapRTV->GetCPUDescriptorHandleForHeapStart();
+	auto incrementtSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	for (auto i = 0u; i < FrameCount; ++i)
+	{
+		hr = m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pColorBuffer[i]));
+
+		// NULLチェック
+		if (FAILED(hr)) { return false; }
+
+		D3D12_RENDER_TARGET_VIEW_DESC viewDesc = {};
+		viewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+		viewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+		viewDesc.Texture2D.MipSlice = 0;
+		viewDesc.Texture2D.PlaneSlice = 0;
+
+		// レンダーターゲットビューの生成
+		m_pDevice->CreateRenderTargetView(m_pColorBuffer[i], &viewDesc, handle);
+		m_HandleRTV[i] = handle;
+		handle.ptr += incrementtSize;
+	}
+
+	// フェンスカウンターをリセット
+	for (auto i = 0u; i < FrameCount; ++i)
+	{
+		m_FenceCounter[i] = 0;
+	}
+
+	// フェンスの生成
+	hr = m_pDevice->CreateFence
+	(
+		m_FenceCounter[m_FrameIndex],
+		D3D12_FENCE_FLAG_NONE,
+		IID_PPV_ARGS(&m_pFence)
+	);
+
+	// NULLチェック
+	if (FAILED(hr)) { return false; }
+
+	m_FenceCounter[m_FrameIndex]++;
+
+	// イベントの生成
+	m_FenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+
+	// NULLチェック
+	if (m_FenceEvent == nullptr) { return false; }
+
+	// コマンドリストを閉じる
+	m_pCmdList->Close();
 
 	return true;
 }
