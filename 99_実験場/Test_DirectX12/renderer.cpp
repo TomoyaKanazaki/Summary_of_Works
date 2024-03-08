@@ -55,7 +55,7 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	);
 
 	// NULLチェック
-	if (FAILED(hr)) { return hr; }
+	if (FAILED(hr)) { return false; }
 
 	// コマンドキューの生成
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -66,14 +66,14 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	hr = m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pQueue));
 
 	// NULLチェック
-	if (FAILED(hr)) { return hr; }
+	if (FAILED(hr)) { return false; }
 
 	// DXGIファクトリーの生成
 	IDXGIFactory4* pFactory = nullptr;
 	hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory));
 
 	// NULLチェック
-	if (FAILED(hr)) { return hr; }
+	if (FAILED(hr)) { return false; }
 
 	// スワップチェインの設定
 	DXGI_SWAP_CHAIN_DESC chainDesc = {};
@@ -101,7 +101,7 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	if (FAILED(hr))
 	{
 		Utility::SafeRelease(pFactory);
-		return hr;
+		return false;
 	}
 
 
