@@ -12,4 +12,5 @@
 //==========================================
 namespace Utility
 {
+	template <class T> void SafeRelease(T* pT);
 }

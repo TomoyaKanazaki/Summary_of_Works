@@ -55,7 +55,7 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	);
 
 	// NULLチェック
-	if (FAILED(hr)) { return false; }
+	if (FAILED(hr)) { return hr; }
 
 	// コマンドキューの生成
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -63,17 +63,17 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	queueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	queueDesc.NodeMask = 0;
-	hr = m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pQueue));	
+	hr = m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pQueue));
 
 	// NULLチェック
-	if (FAILED(hr)) { return false; }
+	if (FAILED(hr)) { return hr; }
 
 	// DXGIファクトリーの生成
 	IDXGIFactory4* pFactory = nullptr;
 	hr = CreateDXGIFactory1(IID_PPV_ARGS(&pFactory));
 
 	// NULLチェック
-	if (FAILED(hr)) { return false; }
+	if (FAILED(hr)) { return hr; }
 
 	// スワップチェインの設定
 	DXGI_SWAP_CHAIN_DESC chainDesc = {};
@@ -100,146 +100,11 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	// NULLチェック
 	if (FAILED(hr))
 	{
-		// DXGIファクトリーの破棄
-		if (pFactory)
-		{
-			pFactory->Release();
-			pFactory = nullptr;
-		}
-
-		return false;
+		Utility::SafeRelease(pFactory);
+		return hr;
 	}
 
-	// IDXGISwapChain3を取得
-	hr = pSwapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain));
 
-	// NULLチェック
-	if (FAILED(hr))
-	{
-		// DXGIファクトリーの破棄
-		if (pFactory)
-		{
-			pFactory->Release();
-			pFactory = nullptr;
-		}
-
-		// スワップチェインの破棄
-		if (pSwapChain)
-		{
-			pSwapChain->Release();
-			pSwapChain = nullptr;
-		}
-
-		return false;
-	}
-
-	// バックバッファ番号を取得
-	m_FrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
-
-	// DXGIファクトリーの破棄
-	if (pFactory)
-	{
-		pFactory->Release();
-		pFactory = nullptr;
-	}
-
-	// スワップチェインの破棄
-	if (pSwapChain)
-	{
-		pSwapChain->Release();
-		pSwapChain = nullptr;
-	}
-
-	// コマンドアロケータの生成
-	for (auto i = 0u; i < FrameCount; ++i)
-	{
-		hr = m_pDevice->CreateCommandAllocator
-		(
-			D3D12_COMMAND_LIST_TYPE_DIRECT,
-			IID_PPV_ARGS(&m_pCmdAllocator[i])
-		);
-
-		// NULLチェック
-		if (FAILED(hr)) { return false; }
-	}
-
-	// コマンドリストの生成
-	hr = m_pDevice->CreateCommandList
-	(
-		0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		m_pCmdAllocator[m_FrameIndex],
-		nullptr,
-		IID_PPV_ARGS(&m_pCmdList)
-	);
-
-	// NULLチェック
-	if (FAILED(hr)) { return false; }
-
-	// ディスクリプタヒープの設定
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
-	heapDesc.NumDescriptors = FrameCount;
-	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	heapDesc.NodeMask = 0;
-
-	// ディスクリプタヒープを生成
-	hr = m_pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&m_pHeapRTV));
-
-	// NULLチェック
-	if (FAILED(hr)) { return false; }
-
-	auto handle = m_pHeapRTV->GetCPUDescriptorHandleForHeapStart();
-	auto incrementSize = m_pDevice
-		->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	for (auto i = 0; i < FrameCount; ++i)
-	{
-		hr = m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pColorBuffer[i]));
-
-		// NULLチェック
-		if (FAILED(hr)) { return false; }
-
-		D3D12_RENDER_TARGET_VIEW_DESC viewDesc = {};
-		viewDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
-		viewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-		viewDesc.Texture2D.MipSlice = 0;
-		viewDesc.Texture2D.PlaneSlice = 0;
-
-		// レンダーターゲットビューの生成
-		m_pDevice->CreateRenderTargetView(m_pColorBuffer[i], &viewDesc, handle);
-
-		m_HandleRTV[i] = handle;
-		handle.ptr += incrementSize;
-	}
-
-	// フェンスカウンターをリセット
-	for (auto i = 0; i < FrameCount; ++i)
-	{
-		m_FenceCounter[i] = 0;
-	}
-
-	// フェンスの生成
-	hr = m_pDevice->CreateFence
-	(
-		m_FenceCounter[m_FrameIndex],
-		D3D12_FENCE_FLAG_NONE,
-		IID_PPV_ARGS(&m_pFence)
-	);
-
-	// NULLチェック
-	if (FAILED(hr)) { return false; }
-
-	++m_FenceCounter[m_FrameIndex];
-
-	// イベントの生成
-	m_FenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-
-	// NULLチェック
-	if (m_FenceEvent == nullptr) { return false; }
-
-	// コマンドリストを閉じる
-	m_pCmdList->Close();
 
 	return true;
 }

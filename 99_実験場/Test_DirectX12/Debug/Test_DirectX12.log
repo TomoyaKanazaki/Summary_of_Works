@@ -1,9 +1,0 @@
-﻿  app.cpp
-  main.cpp
-C:\Users\student\Desktop\DATA\00_School\01_Game\00_Git\Summary_of_Works\99_実験場\Test_DirectX12\main.cpp(21,95): warning C4100: 'nCmdShow': 引数は関数の本体部で 1 度も参照されません。
-C:\Users\student\Desktop\DATA\00_School\01_Game\00_Git\Summary_of_Works\99_実験場\Test_DirectX12\main.cpp(21,30): warning C4100: 'hInstance': 引数は関数の本体部で 1 度も参照されません。
-  renderer.cpp
-C:\Users\student\Desktop\DATA\00_School\01_Game\00_Git\Summary_of_Works\99_実験場\Test_DirectX12\renderer.cpp(268,34): warning C4100: 'interval': 引数は関数の本体部で 1 度も参照されません。
-  utility.cpp
-  コードを生成中...
-  Test_DirectX12.vcxproj -> C:\Users\student\Desktop\DATA\00_School\01_Game\00_Git\Summary_of_Works\99_実験場\Debug\Test_DirectX12.exe
