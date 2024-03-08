@@ -12,5 +12,13 @@
 //==========================================
 namespace Utility
 {
-	template <class T> void SafeRelease(T* pT);
+    // セーフリリース
+	template <class T> void SafeRelease(T** ppT)
+    {
+        if (*ppT)
+        {
+            (*ppT)->Release();
+            *ppT = nullptr;
+        }
+    }
 }

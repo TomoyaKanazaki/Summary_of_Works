@@ -100,7 +100,7 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	// NULLチェック
 	if (FAILED(hr))
 	{
-		Utility::SafeRelease(pFactory);
+		Utility::SafeRelease(&pFactory);
 		return false;
 	}
 
