@@ -88,7 +88,7 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 	chainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	chainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	chainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	chainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	chainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	chainDesc.SampleDesc.Count = 1;
 	chainDesc.SampleDesc.Quality = 0;
 	chainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
