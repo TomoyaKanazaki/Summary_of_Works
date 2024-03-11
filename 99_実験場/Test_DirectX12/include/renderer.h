@@ -37,6 +37,12 @@ private:
 
 	// メンバ関数
 	void Present(uint32_t interval);
+	bool CreateQueue(); // コマンドキューの生成
+	bool CreateSwapChain(HWND hWnd, int width, int height); // スワップチェインの生成
+	bool CreateAllocator(); // コマンドアロケータの生成
+	bool CreateList(); // コマンドリストの生成
+	bool CreateTargetView(); // レンダーターゲットビューの生成
+	bool CreateFence(); // フェンスの生成
 
 	// 静的メンバ変数
 	static const uint32_t FrameCount = 2; // フレームバッファ数
