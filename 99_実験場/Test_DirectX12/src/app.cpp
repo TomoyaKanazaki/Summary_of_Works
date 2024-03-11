@@ -166,19 +166,19 @@ LRESULT CALLBACK CApp::WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 //==========================================
 //  終了処理
 //==========================================
-void CApp::TermApp()
+void CApp::UninitApp()
 {
 	// レンダラーの終了処理
-	m_pRenderer->Term();
+	m_pRenderer->Uninit();
 
 	// ウィンドウの終了処理
-	TermWnd();
+	UninitWnd();
 }
 
 //==========================================
 //  ウィンドウの終了処理
 //==========================================
-void CApp::TermWnd()
+void CApp::UninitWnd()
 {
 	// ウィンドウの登録を解除
 	if (m_hInst != nullptr)
@@ -203,7 +203,7 @@ void CApp::Run()
 	}
 
 	// 終了処理
-	TermApp();
+	UninitApp();
 }
 
 //==========================================

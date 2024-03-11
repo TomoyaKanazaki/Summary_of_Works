@@ -33,14 +33,14 @@ public:
 private:
 
 	// メンバ関数
-	bool InitApp(); // 
-	void TermApp(); // 
-	bool InitWnd(); // 
-	void TermWnd(); // 
-	void MainLoop(); // 
+	bool InitApp(); // アプリケーションの初期化
+	void UninitApp(); // アプリケーションの終了
+	bool InitWnd(); // ウィンドウの初期化
+	void UninitWnd(); // ウィンドウの終了
+	void MainLoop(); // メインループ
 
 	// 静的メンバ関数
-	static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp);
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp); // ウィンドウプロシージャ
 
 	// メンバ変数
 	HINSTANCE m_hInst; // インスタンスハンドル

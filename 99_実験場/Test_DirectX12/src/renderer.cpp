@@ -99,7 +99,7 @@ bool CRenderer::Init(HWND hWnd, int width, int height)
 //==========================================
 //  I—¹ˆ—
 //==========================================
-void CRenderer::Term()
+void CRenderer::Uninit()
 {
 	// GPUˆ—‚ÌŠ®—¹‚ğ‘Ò‹@
 	WaitGPU();
