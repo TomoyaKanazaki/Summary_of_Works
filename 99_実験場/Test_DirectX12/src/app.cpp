@@ -15,7 +15,7 @@ namespace
 	const int SCREEN_WIDTH = 1280; // ウィンドウの横幅
 	const int SCREEN_HEIGHT = 720; // ウィンドウの高さ
 	const auto ClassName = TEXT("WindowClass"); // ウィンドウクラスネーム
-	const auto WindowName = TEXT("DirectX12Test"); // ウィンドウネーム
+	const auto WindowName = TEXT("Test_DirectX12"); // ウィンドウネーム
 }
 
 //==========================================

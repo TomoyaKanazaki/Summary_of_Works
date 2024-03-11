@@ -51,12 +51,22 @@ CRenderer::~CRenderer()
 //==========================================
 bool CRenderer::Init(HWND hWnd, int width, int height)
 {
+#if defined(DEBUG) || defined(_DEBUG)
+{
+	ComPtr <ID3D12Debug> debug;
+	auto hr = D3D12GetDebugInterface(IID_PPV_ARGS(debug.GetAddressOf()));
+
+	// デバッグレイヤーを有効化
+	if (SUCCEEDED(hr)) { debug->EnableDebugLayer(); }
+}
+#endif
+
 	// デバイスの生成
 	auto hr = D3D12CreateDevice
 	(
 		nullptr,
 		D3D_FEATURE_LEVEL_11_0,
-		IID_PPV_ARGS(&m_pDevice)
+		IID_PPV_ARGS(m_pDevice.GetAddressOf())
 	);
 
 	// NULLチェック
@@ -102,32 +112,35 @@ void CRenderer::Term()
 	}
 
 	// フェンスの破棄
-	Utility::SafeRelease(m_pFence);
+	m_pFence.Reset();
 
 	// レンダーターゲットビューの破棄
-	Utility::SafeRelease(m_pHeapRTV);
+	m_pHeapRTV.Reset();
 	for (auto i = 0u; i < FrameCount; ++i)
 	{
-		Utility::SafeRelease(m_pColorBuffer[i]);
+		m_pColorBuffer[i].Reset();
 	}
 
 	// コマンドリストの破棄
-	Utility::SafeRelease(m_pCmdList);
+	m_pCmdList.Reset();
 
 	// コマンドアロケータの破棄
 	for (auto i = 0u; i < FrameCount; ++i)
 	{
-		Utility::SafeRelease(m_pCmdAllocator[i]);
+		m_pCmdAllocator[i].Reset();
 	}
 
 	// スワップチェインの破棄
-	Utility::SafeRelease(m_pSwapChain);
+	m_pSwapChain.Reset();
 
 	// コマンドキューの破棄
-	Utility::SafeRelease(m_pQueue);
+	m_pQueue.Reset();
 
 	// デバイスの破棄
-	Utility::SafeRelease(m_pDevice);
+	m_pDevice.Reset();
+
+	// 自身の破棄
+	delete this;
 }
 
 //==========================================
@@ -137,13 +150,13 @@ void CRenderer::Render()
 {
 	// コマンドの記録を開始
 	m_pCmdAllocator[m_FrameIndex]->Reset();
-	m_pCmdList->Reset(m_pCmdAllocator[m_FrameIndex], nullptr);
+	m_pCmdList->Reset(m_pCmdAllocator[m_FrameIndex].Get(), nullptr);
 
 	// リソースバリアの設定
 	D3D12_RESOURCE_BARRIER barrier = {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = m_pColorBuffer[m_FrameIndex];
+	barrier.Transition.pResource = m_pColorBuffer[m_FrameIndex].Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -166,7 +179,7 @@ void CRenderer::Render()
 	// リソースバリアの設定
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = m_pColorBuffer[m_FrameIndex];
+	barrier.Transition.pResource = m_pColorBuffer[m_FrameIndex].Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -178,7 +191,7 @@ void CRenderer::Render()
 	m_pCmdList->Close();
 
 	// コマンドを実装
-	ID3D12CommandList* ppCmdLists[] = { m_pCmdList };
+	ID3D12CommandList* ppCmdLists[] = { m_pCmdList.Get()};
 	m_pQueue->ExecuteCommandLists(1, ppCmdLists);
 
 	// 画面に表示
@@ -195,7 +208,7 @@ void CRenderer::WaitGPU()
 	Utility::MyAssert(m_FenceEvent == nullptr);
 
 	// シグナル処理
-	m_pQueue->Signal(m_pFence, m_FenceCounter[m_FrameIndex]);
+	m_pQueue->Signal(m_pFence.Get(), m_FenceCounter[m_FrameIndex]);
 
 	// 完了時にイベントを設定する
 	m_pFence->SetEventOnCompletion(m_FenceCounter[m_FrameIndex], m_FenceEvent);
@@ -217,7 +230,7 @@ void CRenderer::Present(uint32_t interval)
 
 	// シグナル処理
 	const auto currentValue = m_FenceCounter[m_FrameIndex];
-	m_pQueue->Signal(m_pFence, currentValue);
+	m_pQueue->Signal(m_pFence.Get(), currentValue);
 
 	// バックバッファ番号を更新
 	m_FrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
@@ -245,7 +258,7 @@ bool CRenderer::CreateQueue()
 	queueDesc.NodeMask = 0;
 
 	// NULLチェック
-	if (FAILED(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pQueue)))) { return false; }
+	if (FAILED(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(m_pQueue.GetAddressOf())))) { return false; }
 
 	return true;
 }
@@ -279,14 +292,14 @@ bool CRenderer::CreateSwapChain(HWND hWnd, int width, int height)
 
 	// スワップチェインの生成
 	IDXGISwapChain* pSwapChain = nullptr;
-	if (FAILED(pFactory->CreateSwapChain(m_pQueue, &chainDesc, &pSwapChain)))
+	if (FAILED(pFactory->CreateSwapChain(m_pQueue.Get(), &chainDesc, &pSwapChain)))
 	{
 		Utility::SafeRelease(pFactory);
 		return false;
 	}
 
 	// IDGISwapChain3を取得
-	if (FAILED(pSwapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain))))
+	if (FAILED(pSwapChain->QueryInterface(IID_PPV_ARGS(m_pSwapChain.GetAddressOf()))))
 	{
 		Utility::SafeRelease(pFactory);
 		Utility::SafeRelease(pSwapChain);
@@ -310,7 +323,7 @@ bool CRenderer::CreateAllocator()
 {
 	for (auto i = 0u; i < FrameCount; ++i)
 	{
-		if (FAILED(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,IID_PPV_ARGS(&m_pCmdAllocator[i]))))
+		if (FAILED(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,IID_PPV_ARGS(m_pCmdAllocator[i].GetAddressOf()))))
 		{ return false; }
 	}
 
@@ -326,9 +339,9 @@ bool CRenderer::CreateList()
 	(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		m_pCmdAllocator[m_FrameIndex],
+		m_pCmdAllocator[m_FrameIndex].Get(),
 		nullptr,
-		IID_PPV_ARGS(&m_pCmdList)
+		IID_PPV_ARGS(m_pCmdList.GetAddressOf())
 	))) { return false; }
 
 	return true;
@@ -347,14 +360,14 @@ bool CRenderer::CreateTargetView()
 	heapDesc.NodeMask = 0;
 
 	// ディスクリプタヒープの生成
-	if (FAILED(m_pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&m_pHeapRTV)))) { return false; }
+	if (FAILED(m_pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(m_pHeapRTV.GetAddressOf())))) { return false; }
 
 	auto handle = m_pHeapRTV->GetCPUDescriptorHandleForHeapStart();
 	auto incrementtSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	for (auto i = 0u; i < FrameCount; ++i)
 	{
-		if (FAILED(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pColorBuffer[i])))) { return false; }
+		if (FAILED(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(m_pColorBuffer[i].GetAddressOf())))) { return false; }
 
 		D3D12_RENDER_TARGET_VIEW_DESC viewDesc = {};
 		viewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -363,7 +376,7 @@ bool CRenderer::CreateTargetView()
 		viewDesc.Texture2D.PlaneSlice = 0;
 
 		// レンダーターゲットビューの生成
-		m_pDevice->CreateRenderTargetView(m_pColorBuffer[i], &viewDesc, handle);
+		m_pDevice->CreateRenderTargetView(m_pColorBuffer[i].Get(), &viewDesc, handle);
 		m_HandleRTV[i] = handle;
 		handle.ptr += incrementtSize;
 	}
@@ -387,7 +400,7 @@ bool CRenderer::CreateFence()
 	(
 		m_FenceCounter[m_FrameIndex],
 		D3D12_FENCE_FLAG_NONE,
-		IID_PPV_ARGS(&m_pFence)
+		IID_PPV_ARGS(m_pFence.GetAddressOf())
 	))) { return false; }
 
 	m_FenceCounter[m_FrameIndex]++;
