@@ -215,9 +215,15 @@ void CApp::MainLoop()
 
 	while (WM_QUIT != msg.message)
 	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != TRUE) { continue; }
-
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) == TRUE)
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			// •`‰æ
+			m_pRenderer->Render();
+		}
 	}
 }
