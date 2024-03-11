@@ -5,24 +5,33 @@
 //
 //==========================================
 #include "app.h"
+#include "renderer.h"
 
 //==========================================
 //  定数定義
 //==========================================
 namespace
 {
+	const int SCREEN_WIDTH = 1280; // ウィンドウの横幅
+	const int SCREEN_HEIGHT = 720; // ウィンドウの高さ
 	const auto ClassName = TEXT("WindowClass"); // ウィンドウクラスネーム
 	const auto WindowName = TEXT("DirectX12Test"); // ウィンドウネーム
 }
 
 //==========================================
+//  静的メンバ変数宣言
+//==========================================
+CApp* CApp::m_pApp = nullptr;
+
+//==========================================
 //  コンストラクタ
 //==========================================
-App::App(uint32_t width, uint32_t height) :
+CApp::CApp(uint32_t width, uint32_t height) :
 	m_hInst(nullptr),
 	m_hWnd(nullptr),
 	m_Width(width),
-	m_Height(height)
+	m_Height(height),
+	m_pRenderer(nullptr)
 {
 	// Do Nothing
 }
@@ -30,34 +39,38 @@ App::App(uint32_t width, uint32_t height) :
 //==========================================
 //  デストラクタ
 //==========================================
-App::~App()
+CApp::~CApp()
 {
 	// Do Nothing
 }
 
 //==========================================
-//  実行
+//  CAppクラスのインスタンス取得
 //==========================================
-void App::Run()
+CApp* CApp::GetInstance()
 {
-	// 初期化処理
-	if (InitApp())
+	//インスタンス生成
+	if (m_pApp == nullptr)
 	{
-		// メインループ
-		MainLoop();
+		m_pApp = new CApp(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
-	// 終了処理
-	TermApp();
+	return m_pApp;
 }
 
 //==========================================
 //  初期化処理
 //==========================================
-bool App::InitApp()
+bool CApp::InitApp()
 {
 	// ウィンドウの初期化
 	if (!InitWnd()) { return false; } // 初期化に失敗
+
+	// レンダラーの取得
+	m_pRenderer = CRenderer::GetInstance();
+
+	// レンダラーの初期化
+	if (!m_pRenderer->Init(m_hWnd, m_Width, m_Height)) { return false; } // 初期化に失敗
 
 	// 正常終了
 	return true;
@@ -66,7 +79,7 @@ bool App::InitApp()
 //==========================================
 //  ウィンドウの初期化
 //==========================================
-bool App::InitWnd()
+bool CApp::InitWnd()
 {
 	// インスタンスハンドルの取得
 	auto hInst = GetModuleHandle(nullptr);
@@ -135,7 +148,7 @@ bool App::InitWnd()
 //==========================================
 //  ウィンドウプロシージャ
 //==========================================
-LRESULT CALLBACK App::WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
+LRESULT CALLBACK CApp::WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
 	{
@@ -151,9 +164,52 @@ LRESULT CALLBACK App::WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 }
 
 //==========================================
+//  終了処理
+//==========================================
+void CApp::TermApp()
+{
+	// レンダラーの終了処理
+	m_pRenderer->Term();
+
+	// ウィンドウの終了処理
+	TermWnd();
+}
+
+//==========================================
+//  ウィンドウの終了処理
+//==========================================
+void CApp::TermWnd()
+{
+	// ウィンドウの登録を解除
+	if (m_hInst != nullptr)
+	{
+		UnregisterClass(ClassName, m_hInst);
+	}
+
+	m_hInst = nullptr;
+	m_hWnd = nullptr;
+}
+
+//==========================================
+//  実行
+//==========================================
+void CApp::Run()
+{
+	// 初期化処理
+	if (InitApp())
+	{
+		// メインループ
+		MainLoop();
+	}
+
+	// 終了処理
+	TermApp();
+}
+
+//==========================================
 //  メインループ
 //==========================================
-void App::MainLoop()
+void CApp::MainLoop()
 {
 	MSG msg = {};
 
@@ -164,28 +220,4 @@ void App::MainLoop()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-}
-
-//==========================================
-//  終了処理
-//==========================================
-void App::TermApp()
-{
-	// ウィンドウの終了処理
-	TermWnd();
-}
-
-//==========================================
-//  ウィンドウの終了処理
-//==========================================
-void App::TermWnd()
-{
-	// ウィンドウの登録を解除
-	if (m_hInst != nullptr)
-	{
-		UnregisterClass(ClassName, m_hInst);
-	}
-
-	m_hInst = nullptr;
-	m_hWnd = nullptr;
 }

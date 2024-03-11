@@ -29,12 +29,18 @@ public:
 	void Term();
 	void Render();
 	void WaitGPU();
-	void Present(uint32_t interval);
+
+	// 静的メンバ関数
+	static CRenderer* GetInstance();
 
 private:
 
+	// メンバ関数
+	void Present(uint32_t interval);
+
 	// 静的メンバ変数
 	static const uint32_t FrameCount = 2; // フレームバッファ数
+	static CRenderer* m_pRenderer;
 
 	// メンバ変数
 	ID3D12Device* m_pDevice; // デバイス

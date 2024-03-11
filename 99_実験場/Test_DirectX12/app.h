@@ -10,17 +10,25 @@
 #include <cstdint>
 
 //==========================================
+//  前方宣言
+//==========================================
+class CRenderer; // レンダラークラス
+
+//==========================================
 //  クラス定義
 //==========================================
-class App
+class CApp
 {
 public:
 
 	//メンバ関数
-	App(uint32_t width, uint32_t height); // コンストラクタ
-	~App(); // デストラクタ
+	CApp(uint32_t width, uint32_t height); // コンストラクタ
+	~CApp(); // デストラクタ
 
 	void Run();
+
+	// 静的メンバ関数
+	static CApp* GetInstance();
 
 private:
 
@@ -39,5 +47,9 @@ private:
 	HWND m_hWnd; // ウィンドウハンドル
 	uint32_t m_Width; // ウィンドウの横幅
 	uint32_t m_Height; // ウィンドウの縦幅
+	CRenderer* m_pRenderer; // レンダラー
+
+	// 静的メンバ変数
+	static CApp* m_pApp;
 
 };

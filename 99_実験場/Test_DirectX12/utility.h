@@ -15,12 +15,14 @@ namespace Utility
     //======================================
     //  セーフリリース
     //======================================
-	template <class T> void SafeRelease(T** ppT)
+	template <class T> void SafeRelease(T* pT)
     {
-        if (*ppT)
+        if (pT)
         {
-            (*ppT)->Release();
-            *ppT = nullptr;
+            (pT)->Release();
+            pT = nullptr;
         }
     }
+
+    void MyAssert(bool bFrag); // trueで止まるアサート
 }

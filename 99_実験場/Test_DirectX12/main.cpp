@@ -5,24 +5,28 @@
 //
 //==========================================
 #include "app.h"
-
-//==========================================
-//  定数定義
-//==========================================
-namespace
-{
-	const int SCREEN_WIDTH = 1280; // ウィンドウの横幅
-	const int SCREEN_HEIGHT = 720; // ウィンドウの高さ
-}
+#include "utility.h"
 
 //==========================================
 //  メイン関数
 //==========================================
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /*hInstancePrev*/, LPSTR /*lpCmdLine*/, int nCmdShow)
 {
+	// アプリケーションのインスタンスを生成
+	CApp* pApp = CApp::GetInstance();
+
+	// NULLチェック
+	Utility::MyAssert(pApp == nullptr);
+
 	// アプリケーションを実行
-	App app(SCREEN_WIDTH, SCREEN_HEIGHT);
-	app.Run();
+	pApp->Run();
+
+	// アプリケーションの破棄
+	if (pApp != nullptr)
+	{
+		delete pApp;
+		pApp = nullptr;
+	}
 
 	return 0;
 }
